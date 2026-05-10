@@ -3,7 +3,6 @@ pipeline {
     agent any
 
     tools {
-        maven 'Maven'
         jdk 'JDK17'
     }
 
@@ -27,6 +26,7 @@ pipeline {
         stage('Build Application') {
             steps {
 
+                sh 'chmod +x mvnw'
                 sh './mvnw clean package'
             }
         }
@@ -47,9 +47,13 @@ pipeline {
 
                 pkill -f '${JAR_NAME}' || true
 
+                echo "Creating app directory..."
+
+                sudo mkdir -p ${APP_DIR}
+
                 echo "Copying new JAR..."
 
-                cp target/${JAR_NAME} ${APP_DIR}/
+                sudo cp target/${JAR_NAME} ${APP_DIR}/
 
                 echo "Starting application..."
 
